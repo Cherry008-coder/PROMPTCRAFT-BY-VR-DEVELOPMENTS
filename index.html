@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>PromptCraft — by VR DEVELOPMENTS | Groq Powered</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<meta name="description" content="PromptCraft by VR DEVELOPMENTS - Groq-powered prompt engineering with 3-key failover. Transform vague ideas into perfect 95+ prompts.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>◐</text></svg>">
+</head>
+<body>
+<div class="grain"></div>
+<canvas id="bgCanvas"></canvas>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo-wrap">
+      <div class="logo-mark">
+        <span class="mark-vr">VR</span>
+        <div class="mark-dot" id="brainDot"></div>
+      </div>
+      <div class="logo-text">
+        <span class="logo-title">VR DEVELOPMENTS</span>
+        <span class="logo-sub">PROMPTCRAFT • GROQ BRAIN • V2</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#forge" class="nav-link">Forge</a>
+      <a href="#lab" class="nav-link">Quality Lab</a>
+      <button class="nav-cta brain-status" id="brainBtn">
+        <span class="brain-led" id="brainLed"></span>
+        <span id="brainStatusText">Brain: Offline</span>
+      </button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙ Settings</button>
+    </div>
+    <button class="mobile-menu" id="mobileMenuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#forge">Forge</a>
+    <a href="#lab">Quality Lab</a>
+    <button class="btn ghost small" id="mobileBrainBtn">🧠 Brain Settings</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-badge" id="heroBadge">
+      <span class="badge-dot" id="heroBadgeDot"></span>
+      <span id="heroBadgeText">BY VR DEVELOPMENTS • GROQ BRAIN • ENGINEERED FOR 99% QUALITY PROMPTS</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="line1">Turn vague ideas</span>
+      <span class="line2 gradient-text">into perfect prompts.</span>
+    </h1>
+    <p class="hero-desc">Groq-powered prompt engineering with 3-key failover. Describe anything in plain English. PromptCraft rebuilds it with role, context, constraints, format & examples — then proves it scores 95+ in our Quality Lab.</p>
+    <div class="hero-actions">
+      <a href="#forge" class="btn primary"><span>Start Crafting</span><i>↗</i></a>
+      <button class="btn ghost" id="demoBtn"><span>See Example</span></button>
+      <button class="btn ghost" id="heroSettingsBtn"><span>🧠 Connect Groq Brain</span></button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><b id="statCount">0</b><span>Prompts Crafted</span></div>
+      <div class="stat"><b id="avgScore">98.4%</b><span id="avgScoreLabel">Avg Quality • Local</span></div>
+      <div class="stat"><b id="latencyStat">0ms</b><span id="latencyLabel">Groq • 3-Key Failover</span></div>
+    </div>
+  </section>
+
+  <section class="forge" id="forge">
+    <div class="section-head">
+      <div class="eyebrow"><span>01</span> IDEA FORGE — GROQ BRAIN</div>
+      <h2>Craft a perfect prompt from any thought</h2>
+      <div class="brain-info" id="brainInfo">
+        <span class="brain-pill" id="brainModePill">⚡ Local Engine Active</span>
+        <span class="brain-pill muted" id="brainKeysPill">No keys — Add in Settings to unlock Groq</span>
+      </div>
+    </div>
+    <div class="forge-grid">
+      <!-- Input -->
+      <div class="card forge-input">
+        <div class="card-top">
+          <h3>Your Idea</h3>
+          <span class="card-hint">Be messy. Brain will fix it.</span>
+        </div>
+        <textarea id="ideaInput" placeholder="e.g., i want to build a habit tracker app with streaks, but make it look like apple fitness... or write a cold email to get clients for my design agency..."></textarea>
+        
+        <div class="controls">
+          <div class="control-group">
+            <label>Task Type</label>
+            <div class="pill-group" id="taskTypeGroup">
+              <button class="pill active" data-value="general">General</button>
+              <button class="pill" data-value="coding">Coding</button>
+              <button class="pill" data-value="writing">Writing</button>
+              <button class="pill" data-value="image">Image</button>
+              <button class="pill" data-value="business">Business</button>
+              <button class="pill" data-value="marketing">Marketing</button>
+              <button class="pill" data-value="learning">Learning</button>
+              <button class="pill" data-value="data">Data</button>
+            </div>
+          </div>
+          <div class="control-row">
+            <div class="control-group half">
+              <label>Tone</label>
+              <select id="toneSelect">
+                <option value="professional">Professional & Precise</option>
+                <option value="friendly">Friendly & Conversational</option>
+                <option value="technical">Technical & Detailed</option>
+                <option value="creative">Creative & Bold</option>
+                <option value="concise">Concise & Direct</option>
+              </select>
+            </div>
+            <div class="control-group half">
+              <label>Depth</label>
+              <select id="depthSelect">
+                <option value="standard">Standard — Balanced</option>
+                <option value="detailed">Detailed — With steps & constraints</option>
+                <option value="ultra" selected>Ultra — With CoT + Examples</option>
+              </select>
+            </div>
+          </div>
+          <div class="control-group">
+            <label>Brain Model</label>
+            <select id="modelSelect">
+              <option value="llama-3.3-70b-versatile">Llama 3.3 70B — Best Quality (Recommended)</option>
+              <option value="llama-3.1-70b-versatile">Llama 3.1 70B — Balanced</option>
+              <option value="llama-3.1-8b-instant">Llama 3.1 8B — Fastest</option>
+              <option value="mixtral-8x7b-32768">Mixtral 8x7B — Long Context</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn primary full" id="generateBtn">
+          <span class="btn-icon">✦</span>
+          <span id="generateBtnText">Craft Perfect Prompt with Groq</span>
+          <span class="btn-shine"></span>
+        </button>
+        <p class="micro" id="microText">Groq Brain enabled • 3-key failover • Private • VR DEVELOPMENTS</p>
+      </div>
+
+      <!-- Output -->
+      <div class="card forge-output">
+        <div class="card-top">
+          <h3>Perfected Prompt</h3>
+          <div class="output-actions">
+            <button class="icon-btn" id="copyBtn" title="Copy">⎙ Copy</button>
+            <button class="icon-btn" id="testQualityBtn" title="Test Quality">◐ Test Quality</button>
+          </div>
+        </div>
+        <div class="output-empty" id="outputEmpty">
+          <div class="empty-illust">
+            <div class="empty-ring"></div>
+            <div class="empty-ring2"></div>
+            <span>🧠</span>
+          </div>
+          <p>Your perfect prompt will appear here<br><small id="emptySub">Add Groq keys in Settings for AI-powered generation</small></p>
+          <div class="empty-keys" id="emptyKeysHint">
+            <span>💡 BYOK: Each user brings their own Groq API key — free at console.groq.com</span>
+          </div>
+        </div>
+        <div class="output-content hidden" id="outputContent">
+          <pre id="promptOutput"></pre>
+          <div class="output-meta">
+            <span id="wordCount">0 words</span>
+            <span id="tokenEst">~0 tokens</span>
+            <span class="quality-badge" id="miniQuality">Quality: --</span>
+            <span id="brainUsed" class="brain-used">🧠 Groq</span>
+          </div>
+        </div>
+        <div class="glow"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab" id="lab">
+    <div class="section-head">
+      <div class="eyebrow"><span>02</span> QUALITY LAB — GROQ ANALYZER</div>
+      <h2>Does your prompt actually work?</h2>
+      <p>Groq-powered analysis across 8 dimensions. If Groq is offline, our local heuristic engine takes over instantly.</p>
+    </div>
+
+    <div class="lab-grid">
+      <div class="card lab-input">
+        <div class="card-top">
+          <h3>Prompt to Analyze</h3>
+          <button class="icon-btn small" id="clearLabBtn">Clear</button>
+        </div>
+        <textarea id="labInput" placeholder="Paste any prompt here to calculate its quality score, strengths, weaknesses and fixes..."></textarea>
+        <button class="btn primary full" id="analyzeBtn"><span>◍</span> <span id="analyzeBtnText">Calculate Quality Score</span></button>
+        
+        <div class="lab-tips">
+          <h4>What makes a 95+ prompt?</h4>
+          <ul>
+            <li><b>Role:</b> "Act as a world-class..."</li>
+            <li><b>Context:</b> Who, why, background</li>
+            <li><b>Task:</b> Clear verb + objective</li>
+            <li><b>Constraints:</b> Must / Must not</li>
+            <li><b>Format:</b> JSON, Markdown, Table</li>
+            <li><b>Examples:</b> 1-2 few-shot examples</li>
+          </ul>
+          <div class="byok-note">
+            <b>🔑 BYOK Model:</b> This site is 100% static. Each visitor adds their own free Groq API key from <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> — keys never leave your browser, never touch GitHub.
+          </div>
+        </div>
+      </div>
+
+      <div class="card lab-results">
+        <div class="card-top">
+          <h3>Analysis Report</h3>
+          <span class="vr-tag" id="analyzerTag">VR • GROQ ANALYZER V2</span>
+        </div>
+        
+        <div class="results-empty" id="resultsEmpty">
+          <p>Enter a prompt and hit analyze. If Groq brain is connected, you'll get AI-powered breakdown. Otherwise, local engine scores instantly.</p>
+        </div>
+
+        <div class="results-content hidden" id="resultsContent">
+          <div class="score-hero">
+            <div class="score-ring-wrap">
+              <svg class="score-ring" viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="44"></circle>
+                <circle class="fg" id="scoreCircle" cx="50" cy="50" r="44" stroke-dasharray="276" stroke-dashoffset="276"></circle>
+              </svg>
+              <div class="score-num"><span id="scoreNum">0</span><small>/100</small></div>
+            </div>
+            <div class="score-info">
+              <h4 id="scoreLabel">Needs Work</h4>
+              <p id="scoreDesc">Description</p>
+              <div class="verdict" id="scoreVerdict"></div>
+            </div>
+          </div>
+
+          <div class="metrics" id="metricsList"></div>
+
+          <div class="split">
+            <div class="box strengths">
+              <h5>✓ Strengths</h5>
+              <ul id="strengthsList"></ul>
+            </div>
+            <div class="box weaknesses">
+              <h5>✕ Weaknesses</h5>
+              <ul id="weaknessesList"></ul>
+            </div>
+          </div>
+
+          <div class="box fixes">
+            <h5>✦ How to make it 95+</h5>
+            <ul id="fixesList"></ul>
+            <button class="btn ghost small" id="autoFixBtn">Auto-fix this prompt → 95+ with Groq</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="manifesto">
+    <div class="manifesto-inner">
+      <h2>Built for builders.<br><span class="gradient-text">Branded by VR DEVELOPMENTS.</span></h2>
+      <p>PromptCraft V2 now has a real brain: Groq's Llama 3.3 70B with 3-key automatic failover. BYOK — Bring Your Own Key — means it's safe to host on public GitHub Pages. No backend, no key leaks, just pure speed. If Groq is offline, local engine takes over instantly.</p>
+      <div class="manifesto-grid">
+        <div><b>🧠 Groq Brain</b><span>Llama 3.3 70B via Groq API — 3 keys with auto-failover if rate-limited</span></div>
+        <div><b>🔑 BYOK Secure</b><span>Each user adds own free key at console.groq.com — stored only in localStorage</span></div>
+        <div><b>⚡ 100% Static</b><span>Host on GitHub Pages. No server. Local fallback if offline.</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-mark small"><span class="mark-vr">VR</span><div class="mark-dot" id="footerDot"></div></div>
+      <div>
+        <b>VR DEVELOPMENTS</b>
+        <span>Crafting digital products that feel like magic. • Groq Brain V2</span>
+      </div>
+    </div>
+    <div class="footer-links">
+      <span>PromptCraft v2.0 • Groq Powered • Made in Hyderabad • 2026</span>
+      <span>github pages ready • mit license • byok secure</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>🧠 Groq Brain Settings — BYOK</h3>
+      <button class="icon-btn" id="closeModalBtn">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-intro">
+        <p><b>Bring Your Own Key (BYOK)</b> — This site is 100% static for GitHub Pages. Your Groq API keys are stored ONLY in your browser's localStorage, never sent to our servers or GitHub.</p>
+        <p>Get free keys at <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> — free tier is super generous.</p>
+      </div>
+
+      <div class="key-inputs">
+        <div class="key-group">
+          <label>Groq API Key 1 <span class="required">*</span> <span class="key-status" id="keyStatus1">Not set</span></label>
+          <div class="key-row">
+            <input type="password" id="apiKey1" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxx">
+            <button class="icon-btn" data-toggle="apiKey1">👁</button>
+            <button class="icon-btn" data-test="1">Test</button>
+          </div>
+        </div>
+        <div class="key-group">
+          <label>Groq API Key 2 <span class="optional">(Backup — auto failover)</span> <span class="key-status" id="keyStatus2">Not set</span></label>
+          <div class="key-row">
+            <input type="password" id="apiKey2" placeholder="gsk_yyyyyyyyyyyyyyyyyyyyyyyy (optional)">
+            <button class="icon-btn" data-toggle="apiKey2">👁</button>
+            <button class="icon-btn" data-test="2">Test</button>
+          </div>
+        </div>
+        <div class="key-group">
+          <label>Groq API Key 3 <span class="optional">(Backup — auto failover)</span> <span class="key-status" id="keyStatus3">Not set</span></label>
+          <div class="key-row">
+            <input type="password" id="apiKey3" placeholder="gsk_zzzzzzzzzzzzzzzzzzzzzzzz (optional)">
+            <button class="icon-btn" data-toggle="apiKey3">👁</button>
+            <button class="icon-btn" data-test="3">Test</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-info">
+        <h4>How 3-Key Failover Works</h4>
+        <ul>
+          <li><b>Try Key 1</b> → If rate limit / error / invalid, automatically tries Key 2</li>
+          <li><b>Try Key 2</b> → If fails, tries Key 3</li>
+          <li><b>Try Key 3</b> → If all fail, falls back to local engine (still generates 90+ prompts)</li>
+          <li>Keys are tried in order, with 1.2s delay between retries to avoid hammering</li>
+        </ul>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn ghost" id="clearKeysBtn">Clear All Keys</button>
+        <button class="btn primary" id="saveKeysBtn">Save & Connect Brain</button>
+      </div>
+
+      <div class="modal-foot">
+        <span>🔒 Keys stored in localStorage only • Never uploaded • Clear anytime</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Don't commit keys if you hardcode for testing
+js/config.local.js
+.env
+.env.local
+node_modules/
+.wrangler/
+.dev.vars

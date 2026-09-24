@@ -1,0 +1,94 @@
+# PromptCraft V2 — GitHub Pages Deploy with Secrets Injection
+# by VR DEVELOPMENTS — Option B
+# Keys stored in GitHub Secrets → injected at build time → NOT in git history
+# Keys WILL be visible in deployed JS bundle (DevTools) but that's expected for Option B
+
+name: Deploy PromptCraft to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject Groq API Keys from GitHub Secrets
+        env:
+          GROQ_KEY_1: ${{ secrets.GROQ_API_KEY_1 }}
+          GROQ_KEY_2: ${{ secrets.GROQ_API_KEY_2 }}
+          GROQ_KEY_3: ${{ secrets.GROQ_API_KEY_3 }}
+        run: |
+          echo "🔑 Checking for Groq secrets..."
+          python3 << 'PY'
+          import os, json, re, pathlib
+
+          keys = []
+          for i in [1,2,3]:
+              k = os.environ.get(f'GROQ_KEY_{i}', '').strip()
+              if k and k.startswith('gsk_'):
+                  keys.append(k)
+                  print(f"✅ Found GROQ_API_KEY_{i}: {k[:10]}...{k[-4:]}")
+              else:
+                  print(f"⚪ GROQ_API_KEY_{i} not set or invalid")
+
+          config_path = pathlib.Path("js/config.js")
+          content = config_path.read_text()
+
+          # Replace HARDCODED_KEYS array with actual keys
+          js_array = json.dumps(keys)
+          # This regex replaces HARDCODED_KEYS: [...] with the new array
+          new_content = re.sub(
+              r"HARDCODED_KEYS:\s*\[.*?\]",
+              f"HARDCODED_KEYS: {js_array}",
+              content,
+              flags=re.DOTALL
+          )
+
+          config_path.write_text(new_content)
+          print(f"\n✅ Injected {len(keys)} key(s) into js/config.js")
+          print(f"Keys will be hidden from git history but visible in deployed bundle (Option B)")
+          # Show first 600 chars for debug
+          print("\n--- config.js preview ---")
+          print(new_content[:600])
+          PY
+
+      - name: Verify Injection
+        run: |
+          echo "=== js/config.js after injection ==="
+          cat js/config.js | head -n 30
+          echo ""
+          echo "Keys count in file:"
+          grep -o "gsk_" js/config.js | wc -l || echo "0 (no keys or BYOK mode)"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
